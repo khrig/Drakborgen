@@ -41,7 +41,10 @@
     <Compile Include="Drakborgen.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="States\GameState.cs" />
     <Compile Include="States\MainMenu.cs" />
+    <Compile Include="Systems\RenderSystem.cs" />
+    <Compile Include="TestComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">

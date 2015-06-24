@@ -31,8 +31,10 @@ namespace Drakborgen {
         /// all of your content.
         /// </summary>
         protected override void LoadContent(){
-            _engine.Start(640, 360, 1280, 720);
+            _engine.Initialize(640, 360, 1280, 720);
             _engine.AddState("mainmenu", new MainMenu());
+            _engine.AddState("game", new GameState());
+            _engine.StartWith("mainmenu");
             _engine.AddFont("text", "Fonts/04b_03");
             _engine.AddTexture("tiles32.png", "Sprites/tiles32");
         }

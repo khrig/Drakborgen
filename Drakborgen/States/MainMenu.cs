@@ -1,13 +1,15 @@
 ﻿using Gengine.State;
 using Gengine.UI;
+using Gengine.Utils;
 using Microsoft.Xna.Framework;
 
 namespace Drakborgen.States {
     public class MainMenu : BaseMenuState {
         public override void Init() {
             SetAction(HandleCommand);
-            SetTitle(new MenuOption("text", "Drakborgen", Color.Red, new Vector2(World.View.Center.X - 50, World.View.Center.Y - 50)));
-            AddOption(new MenuOption("text", "Exit", Color.White, new Vector2(World.View.Center.X - 40, World.View.Center.Y + 40)));
+            SetTitle(new MenuOption("text", "Drakborgen", Color.Red, new Vector2(World.View.Center.X - TextExtensions.GetContentLength("text", "Drakborgen").Length() / 2, World.View.Center.Y - 50)));
+            AddOption(new MenuOption("text", "Start", Color.White, new Vector2(World.View.Center.X - TextExtensions.GetContentLength("text", "Start").Length() / 2, World.View.Center.Y + 40)));
+            AddOption(new MenuOption("text", "Exit", Color.White, new Vector2(World.View.Center.X - TextExtensions.GetContentLength("text", "Exit").Length() / 2, World.View.Center.Y + 80)));
         }
 
         private void HandleCommand(string command) {
@@ -18,6 +20,9 @@ namespace Drakborgen.States {
                 if (SelectedOption == "Exit") {
                     StateManager.ClearStates();
                     //StateManager.PushState("game");
+                } else if (SelectedOption == "Start") {
+                    StateManager.ClearStates();
+                    StateManager.PushState("game");
                 }
             }
         }
