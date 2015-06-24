@@ -5,7 +5,7 @@ using Gengine.EntityComponentSystem;
 namespace Drakborgen.Systems {
     public class RenderSystem {
         public IEnumerable<IRenderable> GetAllRenderables(){
-            return Entity.GetAllComponents<TestComponent>(TestComponent.ComponentId);
+            return Entity.GetAllComponents<TestComponent>();
         }
     }
 }

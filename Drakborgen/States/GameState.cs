@@ -13,7 +13,8 @@ namespace Drakborgen.States {
 
         public override void Init(){
             _renderSystem = new RenderSystem();
-            int eid = Entity.Create(new TestComponent(new Vector2(100, 100), "tiles32.png", new Rectangle(0,0,32,32) ));
+            int eid = Entity.Create(new TestComponent(new Vector2(100, 100), "tiles32.png", new Rectangle(0, 0, 32, 32)));
+            Entity.Create(new TestComponent(new Vector2(200, 100), "tiles32.png", new Rectangle(0, 0, 32, 32)));
         }
 
         public override bool Update(float deltaTime) {
