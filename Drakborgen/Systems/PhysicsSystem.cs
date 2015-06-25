@@ -11,12 +11,12 @@ namespace Drakborgen.Systems {
             velocity.X = physics.Direction * physics.MoveAcceleration * dt;
             velocity.X *= physics.GroundDragFactor;
 
-            velocity.Y = physics.Direction * physics.MoveAcceleration * dt;
+            //velocity.Y = physics.Direction * physics.MoveAcceleration * dt;
 
-            if (!physics.IsOnGround)
-                velocity.Y += physics.Gravity;
-            else
-                velocity.Y = 0;
+            //if (!physics.IsOnGround)
+            //    velocity.Y += physics.Gravity;
+            //else
+            //    velocity.Y = 0;
 
             physics.Velocity = velocity;
             physics.Position = physics.Position + (velocity * dt);

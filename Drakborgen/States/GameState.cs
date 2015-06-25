@@ -19,9 +19,10 @@ namespace Drakborgen.States {
         public override void Init(){
             _collisionSystem = new ArcadeCollisionSystem();
             _entityComponentSystem = new EntityComponentSystem();
-            _entityComponentSystem.Create(new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100)));
-            _entityComponentSystem.Create(new RenderComponent("player", new Rectangle(32, 0, 32, 32)), new PhysicsComponent(new Vector2(200, 100)));
+            _entityComponentSystem.Create(new InputComponent(), new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100)));
+            //_entityComponentSystem.Create(new RenderComponent("player", new Rectangle(32, 0, 32, 32)), new PhysicsComponent(new Vector2(200, 100)));
 
+            _entityComponentSystem.RegisterSystem(new InputSystem());
             _entityComponentSystem.RegisterSystem(new PhysicsSystem());
             _entityComponentSystem.RegisterSystem(new RenderSystem());
 
