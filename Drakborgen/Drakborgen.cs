@@ -37,6 +37,9 @@ namespace Drakborgen {
             _engine.StartWith("mainmenu");
             _engine.AddFont("text", "Fonts/04b_03");
             _engine.AddTexture("tiles32.png", "Sprites/tiles32");
+            _engine.AddTexture("player", "Sprites/player32_full");
+
+            _engine.SetDebugDraw(false); // disabled is default
         }
 
         /// <summary>
@@ -53,7 +56,7 @@ namespace Drakborgen {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime){
-            _engine.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
+            _engine.Update((float) gameTime.ElapsedGameTime.TotalMilliseconds);
             base.Update(gameTime);
         }
 

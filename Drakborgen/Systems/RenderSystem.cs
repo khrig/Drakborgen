@@ -1,10 +1,13 @@
-﻿using Gengine.EntityComponentSystem;
+﻿using Drakborgen.Components;
+using Gengine.EntityComponentSystem;
 
 namespace Drakborgen.Systems {
     public class RenderSystem : EntityProcessingSystem{
-       
         public override void Process(Entity entity, float dt){
-            throw new System.NotImplementedException();
+            var movement = entity.GetComponent<PhysicsComponent>();
+            var render = entity.GetComponent<RenderComponent>();
+
+            render.RenderPosition = movement.Position;
         }
     }
 }
