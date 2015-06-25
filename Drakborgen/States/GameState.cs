@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Drakborgen.Systems;
+using Drakborgen.Components;
 using Gengine.Commands;
 using Gengine.Entities;
 using Gengine.EntityComponentSystem;
@@ -9,15 +9,16 @@ using Microsoft.Xna.Framework;
 
 namespace Drakborgen.States {
     public class GameState : State{
-        private RenderSystem _renderSystem;
+        private EntityComponentSystem _entityComponentSystem;
 
         public override void Init(){
-            _renderSystem = new RenderSystem();
-            int eid = Entity.Create(new TestComponent(new Vector2(100, 100), "tiles32.png", new Rectangle(0, 0, 32, 32)));
-            Entity.Create(new TestComponent(new Vector2(200, 100), "tiles32.png", new Rectangle(0, 0, 32, 32)));
+            _entityComponentSystem = new EntityComponentSystem();
+            _entityComponentSystem.Create(new TestComponent(new Vector2(200, 100), "tiles32.png", new Rectangle(0, 0, 32, 32)));
+            _entityComponentSystem.Create(new TestComponent(new Vector2(100, 100), "tiles32.png", new Rectangle(0, 0, 32, 32)));
         }
 
         public override bool Update(float deltaTime) {
+            _entityComponentSystem.Update(deltaTime);
             return false;
         }
 
@@ -32,7 +33,7 @@ namespace Drakborgen.States {
         }
 
         public override IEnumerable<IRenderable> GetRenderTargets(){
-            return _renderSystem.GetAllRenderables();
+            return _entityComponentSystem.GetAllComponents<TestComponent>();
         }
 
         public override IEnumerable<IRenderableText> GetTextRenderTargets() {

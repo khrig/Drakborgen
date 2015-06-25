@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Gengine.Entities;
-using Gengine.EntityComponentSystem;
+﻿using Gengine.EntityComponentSystem;
 
 namespace Drakborgen.Systems {
-    public class RenderSystem {
-        public IEnumerable<IRenderable> GetAllRenderables(){
-            return Entity.GetAllComponents<TestComponent>();
+    public class RenderSystem : EntityProcessingSystem{
+       
+        public override void Process(Entity entity, float dt){
+            throw new System.NotImplementedException();
         }
     }
 }

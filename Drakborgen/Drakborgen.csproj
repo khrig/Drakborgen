@@ -44,7 +44,7 @@
     <Compile Include="States\GameState.cs" />
     <Compile Include="States\MainMenu.cs" />
     <Compile Include="Systems\RenderSystem.cs" />
-    <Compile Include="TestComponent.cs" />
+    <Compile Include="Components\TestComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
