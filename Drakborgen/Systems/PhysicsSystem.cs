@@ -1,5 +1,6 @@
 ﻿using Drakborgen.Components;
 using Gengine.EntityComponentSystem;
+using Microsoft.Xna.Framework;
 
 namespace Drakborgen.Systems {
     public class PhysicsSystem : EntityProcessingSystem {
@@ -7,8 +8,10 @@ namespace Drakborgen.Systems {
 
         public override void Process(Entity entity, float dt){
             var physics = entity.GetComponent<PhysicsComponent>();
+            var inputComponent = entity.GetComponent<InputComponent>();
             var velocity = physics.Velocity;
-            velocity.X = physics.Direction * physics.MoveAcceleration * dt;
+            velocity.X = inputComponent.Direction * physics.MoveAcceleration * dt;
+            velocity.X = MathHelper.Clamp(velocity.X, -physics.MaxMoveSpeed, physics.MaxMoveSpeed);
             velocity.X *= physics.GroundDragFactor;
 
             //velocity.Y = physics.Direction * physics.MoveAcceleration * dt;
@@ -20,7 +23,7 @@ namespace Drakborgen.Systems {
 
             physics.Velocity = velocity;
             physics.Position = physics.Position + (velocity * dt);
-            physics.Direction = 0.0f;
+            inputComponent.Direction = 0.0f;
 
             physics.UpdateBoundingBox();
 
