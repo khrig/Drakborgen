@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Drakborgen.Systems {
     public class PhysicsSystem : EntityProcessingSystem {
-        public PhysicsSystem() : base(typeof(PhysicsComponent)) { }
+        public PhysicsSystem() : base(typeof(PhysicsComponent), typeof(InputComponent)) { }
 
         public override void Process(Entity entity, float dt){
             var physics = entity.GetComponent<PhysicsComponent>();
