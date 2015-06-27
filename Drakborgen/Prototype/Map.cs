@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Gengine.Entities;
 using Gengine.Map;
 using Microsoft.Xna.Framework;
@@ -10,7 +9,8 @@ namespace Drakborgen.Prototype {
         private readonly int _width;
         private readonly int _height;
         private readonly int _tileSize;
-        private readonly List<Tile> _tiles;
+        private readonly int _tileCountX;
+        private readonly int _tileCountY;
         public Tile[,] Tiles { get; set; }
         public int TileSize { get { return _tileSize; } }
 
@@ -18,52 +18,59 @@ namespace Drakborgen.Prototype {
             _width = width;
             _height = height;
             _tileSize = tileSize;
-            _tiles = new List<Tile>((_width * _height) / _tileSize);
-
+            _tileCountX = _width/_tileSize + 1;
+            _tileCountY = _height / _tileSize + 1;
             CreateTiles();
         }
 
-        public void CreateTiles() {
-            int tileCountX = _width / _tileSize + 1;
-            int tileCountY = _height / _tileSize + 1;
-
-            Tiles = new Tile[tileCountX, tileCountY];
-
-            for (int x = 0;x < tileCountX;x++) {
-                for (int y = 0;y < tileCountY;y++) {
-                    if (y == 0 || x == 0 || x*_tileSize == _width - _tileSize || y > tileCountY - 2){
-                        var tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(7*_tileSize, 0, _tileSize, _tileSize));
-                        _tiles.Add(tile);
-                        Tiles[x, y] = tile;
-                    }
-                    else{
-                        var tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(8*_tileSize, 0, _tileSize, _tileSize), false);
-                        _tiles.Add(tile);
-                        Tiles[x, y] = tile;
-                    }
-                }
-            }
-
+        private void CreateTiles() {
+            Tiles = new Tile[_tileCountX, _tileCountY];
+            InitializeGrid();
             SetFaces();
         }
 
+        private void InitializeGrid(){
+            for (int x = 0; x < _tileCountX; x++){
+                for (int y = 0; y < _tileCountY; y++){
+                    var tile = CreateTile(x, y);
+                    Tiles[x, y] = tile;
+                }
+            }
+        }
+
+        private Tile CreateTile(int x, int y){
+            Tile tile;
+            if (IsDoor(x, y)){
+                tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(6*_tileSize, 0, _tileSize, _tileSize), false);
+            } // Collidable tiles
+            else if (y == 0 || x == 0 || x*_tileSize == _width - _tileSize || y*_tileSize >= _height - _tileSize){
+                tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(7*_tileSize, 0, _tileSize, _tileSize));
+            }
+            else{
+                tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(8*_tileSize, 0, _tileSize, _tileSize), false);
+            }
+            return tile;
+        }
+
+        private static bool IsDoor(int x, int y){
+            return (x == 9 || x == 10) && y == 0;
+        }
+
         private void SetFaces() {
-            int tileCountX = _width / _tileSize + 1;
-            int tileCountY = _height / _tileSize + 1;
-            for (int x = 0; x < tileCountX; x++){
-                for (int y = 0; y < tileCountY; y++){
+            for (int x = 0;x < _tileCountX;x++) {
+                for (int y = 0;y < _tileCountY;y++) {
                     var tile = Tiles[x, y];
                     if (tile.IsSolid) {
                         if (x - 1 > 0 && !Tiles[x - 1, y].IsSolid){
                             tile.FaceLeft = true;
                         }
-                        if (x + 1 < tileCountX && !Tiles[x + 1, y].IsSolid) {
+                        if (x + 1 < _tileCountX && !Tiles[x + 1, y].IsSolid) {
                             tile.FaceRight = true;
                         }
                         if (y - 1 > 0 && !Tiles[x, y - 1].IsSolid) {
                             tile.FaceTop = true;
                         }
-                        if (y + 1 < tileCountY && !Tiles[x, y + 1].IsSolid) {
+                        if (y + 1 < _tileCountY && !Tiles[x, y + 1].IsSolid) {
                             tile.FaceBottom = true;
                         }
                     }
@@ -72,7 +79,11 @@ namespace Drakborgen.Prototype {
         }
 
         public IEnumerable<IRenderable> RenderTiles(){
-            return _tiles;
+            for (int x = 0; x < _tileCountX; x++){
+                for (int y = 0; y < _tileCountY; y++){
+                    yield return Tiles[x, y];
+                }
+            }
         }
 
         public Tile Tile(int x, int y){
@@ -80,7 +91,11 @@ namespace Drakborgen.Prototype {
         }
 
         public void ForeachTile(Action<Tile> tileAction){
-            _tiles.ForEach(tileAction);
+            for (int x = 0;x < _tileCountX;x++) {
+                for (int y = 0;y < _tileCountY;y++) {
+                    tileAction(Tiles[x, y]);
+                }
+            }
         }
 
         public Tile PositionToTile(float x, float y) {
@@ -88,39 +103,5 @@ namespace Drakborgen.Prototype {
             var tileY = (int)(y / _tileSize);
             return Tiles[tileX, tileY];
         }
-
-        public void CreateCollisionLayer() {
-            int tileCountX = _width / _tileSize;
-            int tileCountY = _height / _tileSize;
-
-            Tiles = new Tile[tileCountX, tileCountY];
-
-            for (int x = 0;x < tileCountX;x++) {
-                for (int y = 0;y < tileCountY;y++) {
-                    Tile tile = _tiles.FirstOrDefault(t => t.Position.X == x * _tileSize && t.Position.Y == y * _tileSize);
-                    if (tile == null) {
-                        Tiles[x, y] = new Tile("tiles32.png", new Vector2(x, y), new Rectangle(0, 0, _tileSize, _tileSize), false);
-                    } else {
-                        Tiles[x, y] = new Tile(tile.TextureName, new Vector2(x, y), tile.Position, tile.SourceRectangle);
-                    }
-                }
-            }
-        }
     }
-
-    //public class Tile : IRenderable, ICollidable {
-    //    public Tile(string textureName, Vector2 renderPosition, Rectangle sourceRectangle, bool isSolid = false) {
-    //        TextureName = textureName;
-    //        RenderPosition = renderPosition;
-    //        SourceRectangle = sourceRectangle;
-    //        IsSolid = isSolid;
-    //        BoundingBox = new Rectangle((int)renderPosition.X, (int)renderPosition.Y, sourceRectangle.Width, sourceRectangle.Height);
-    //    }
-
-    //    public bool IsSolid { get; set; }
-    //    public string TextureName { get; private set; }
-    //    public Vector2 RenderPosition { get; private set; }
-    //    public Rectangle SourceRectangle { get; private set; }
-    //    public Rectangle BoundingBox { get; private set; }
-    //}
 }
