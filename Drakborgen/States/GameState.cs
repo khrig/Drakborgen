@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Drakborgen.Components;
 using Drakborgen.Prototype;
@@ -16,12 +17,12 @@ namespace Drakborgen.States {
         private EntityComponentSystem _entityComponentSystem;
         private ICollisionSystem _collisionSystem;
         private Map _map;
-        private Entity player;
+        private Entity _player;
 
         public override void Init(){
             _collisionSystem = new ArcadeCollisionSystem(true);
             _entityComponentSystem = new EntityComponentSystem();
-            player = _entityComponentSystem.Create(new InputComponent(), new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100), 32));
+            _player = _entityComponentSystem.Create(new InputComponent(), new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100), 32));
             //_entityComponentSystem.Create(new RenderComponent("player", new Rectangle(32, 0, 32, 32)), new PhysicsComponent(new Vector2(200, 100)));
 
             _entityComponentSystem.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem());
@@ -34,18 +35,13 @@ namespace Drakborgen.States {
             _entityComponentSystem.Update(deltaTime);
 
             _collisionSystem.Collide(_entityComponentSystem.GetAllComponents<PhysicsComponent>(), _map);
-            _collisionSystem.Overlap(player.GetComponent<PhysicsComponent>(), _map.Doors, LoadNextMap);
+            _collisionSystem.Overlap(_player.GetComponent<PhysicsComponent>(), _map.Doors, OnOverlap);
 
             _entityComponentSystem.UpdateBeforeDraw(deltaTime);
             return false;
         }
 
-        private void LoadNextMap(ICollidable first, ICollidable second){
-            var tileAaction = second as TileAction;
-            if (tileAaction == null)
-                return;
-
-            tileAaction.OnOverlap();
+        private void OnOverlap(ICollidable first, ICollidable second){
         }
 
         public override void Unload(){
@@ -69,7 +65,7 @@ namespace Drakborgen.States {
         private bool HandleCommand(ICommand command) {
             if (command.Name == "Escape") {
                 StateManager.PopState();
-                StateManager.PushState("mainmenu");
+                StateManager.PushState(new FadeTransition(1.0f, "mainmenu"));
                 return true;
             }
             return false;

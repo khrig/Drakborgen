@@ -9,6 +9,7 @@ namespace Drakborgen.Components {
         private Vector2 _position;
         public Vector2 Position { get { return _position; } set { _position = value; } }
         public Vector2 Velocity { get; set; }
+
         public bool IsOnGround { get; set; }
 
         public float MoveAcceleration = 0.1f;
