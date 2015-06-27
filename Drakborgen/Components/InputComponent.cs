@@ -2,6 +2,7 @@
 
 namespace Drakborgen.Components {
     public class InputComponent : IComponent {
-        public float Direction { get; set; }
+        public int DirectionX { get; set; }
+        public int DirectionY { get; set; }
     }
 }

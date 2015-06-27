@@ -4,10 +4,10 @@ using Gengine.EntityComponentSystem;
 namespace Drakborgen.Systems {
     public class RenderSystem : EntityProcessingSystem{
         public override void Process(Entity entity, float dt){
-            var movement = entity.GetComponent<PhysicsComponent>();
+            var physics = entity.GetComponent<PhysicsComponent>();
             var render = entity.GetComponent<RenderComponent>();
 
-            render.RenderPosition = movement.Position;
+            render.RenderPosition = physics.Position;
         }
     }
 }

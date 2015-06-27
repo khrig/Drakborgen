@@ -24,9 +24,13 @@ namespace Drakborgen.Systems {
 
         private void RealTimeCommand(InputComponent inputComponent, ICommand command) {
             if (command.Name == "Left")
-                inputComponent.Direction = -1.0f;
+                inputComponent.DirectionX = -1;
             if (command.Name == "Right")
-                inputComponent.Direction = 1.0f;
+                inputComponent.DirectionX = 1;
+            if (command.Name == "Up")
+                inputComponent.DirectionY = -1;
+            if (command.Name == "Down")
+                inputComponent.DirectionY = 1;
             //if (command.Name == "Jump")
             //    _physicsComponent.WantToJump = true;
 

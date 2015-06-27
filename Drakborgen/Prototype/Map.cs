@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Gengine.Entities;
 using Gengine.Map;
@@ -43,7 +44,31 @@ namespace Drakborgen.Prototype {
                 }
             }
 
-            //CreateCollisionLayer();
+            SetFaces();
+        }
+
+        private void SetFaces() {
+            int tileCountX = _width / _tileSize + 1;
+            int tileCountY = _height / _tileSize + 1;
+            for (int x = 0; x < tileCountX; x++){
+                for (int y = 0; y < tileCountY; y++){
+                    var tile = Tiles[x, y];
+                    if (tile.IsSolid) {
+                        if (x - 1 > 0 && !Tiles[x - 1, y].IsSolid){
+                            tile.FaceLeft = true;
+                        }
+                        if (x + 1 < tileCountX && !Tiles[x + 1, y].IsSolid) {
+                            tile.FaceRight = true;
+                        }
+                        if (y - 1 > 0 && !Tiles[x, y - 1].IsSolid) {
+                            tile.FaceTop = true;
+                        }
+                        if (y + 1 < tileCountY && !Tiles[x, y + 1].IsSolid) {
+                            tile.FaceBottom = true;
+                        }
+                    }
+                }
+            }
         }
 
         public IEnumerable<IRenderable> RenderTiles(){

@@ -22,16 +22,18 @@ namespace Drakborgen.States {
             _entityComponentSystem.Create(new InputComponent(), new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100), 32));
             //_entityComponentSystem.Create(new RenderComponent("player", new Rectangle(32, 0, 32, 32)), new PhysicsComponent(new Vector2(200, 100)));
 
-            _entityComponentSystem.RegisterSystem(new InputSystem());
-            _entityComponentSystem.RegisterSystem(new PhysicsSystem());
-            _entityComponentSystem.RegisterSystem(new RenderSystem());
+            _entityComponentSystem.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem());
+            _entityComponentSystem.RegisterRenderSystem(new RenderSystem());
 
             _map = new Map(World.View.Width, World.View.Height, 32);
         }
 
         public override bool Update(float deltaTime) {
             _entityComponentSystem.Update(deltaTime);
+
             _collisionSystem.Collide(_entityComponentSystem.GetAllComponents<PhysicsComponent>(), _map);
+
+            _entityComponentSystem.UpdateBeforeDraw(deltaTime);
             return false;
         }
 
@@ -46,7 +48,7 @@ namespace Drakborgen.States {
         }
 
         public override IEnumerable<IRenderable> GetRenderTargets(){
-            return _map.RenderTiles().Concat(_entityComponentSystem.GetAllComponents<RenderComponent>()).Concat(_collisionSystem.Collisions);
+            return _map.RenderTiles().Concat(_collisionSystem.Collisions).Concat(_entityComponentSystem.GetAllComponents<RenderComponent>());
         }
 
         public override IEnumerable<IRenderableText> GetTextRenderTargets() {
