@@ -13,13 +13,15 @@ namespace Drakborgen.Prototype {
         private readonly int _tileCountY;
         public Tile[,] Tiles { get; set; }
         public int TileSize { get { return _tileSize; } }
-
+        public List<ICollidable> Doors { get; private set; }
+ 
         public Map(int width, int height, int tileSize){
             _width = width;
             _height = height;
             _tileSize = tileSize;
             _tileCountX = _width/_tileSize + 1;
             _tileCountY = _height / _tileSize + 1;
+            Doors = new List<ICollidable>(4);
             CreateTiles();
         }
 
@@ -41,7 +43,9 @@ namespace Drakborgen.Prototype {
         private Tile CreateTile(int x, int y){
             Tile tile;
             if (IsDoor(x, y)){
-                tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(6*_tileSize, 0, _tileSize, _tileSize), false);
+                var tileAction = new TileAction("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(6*_tileSize, 0, _tileSize, _tileSize), false);
+                Doors.Add(tileAction);
+                tile = tileAction;
             } // Collidable tiles
             else if (y == 0 || x == 0 || x*_tileSize == _width - _tileSize || y*_tileSize >= _height - _tileSize){
                 tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(7*_tileSize, 0, _tileSize, _tileSize));

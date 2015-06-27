@@ -6,6 +6,7 @@ using Drakborgen.Systems;
 using Gengine.Commands;
 using Gengine.Entities;
 using Gengine.EntityComponentSystem;
+using Gengine.Map;
 using Gengine.State;
 using Gengine.Systems;
 using Microsoft.Xna.Framework;
@@ -15,11 +16,12 @@ namespace Drakborgen.States {
         private EntityComponentSystem _entityComponentSystem;
         private ICollisionSystem _collisionSystem;
         private Map _map;
+        private Entity player;
 
         public override void Init(){
             _collisionSystem = new ArcadeCollisionSystem(true);
             _entityComponentSystem = new EntityComponentSystem();
-            _entityComponentSystem.Create(new InputComponent(), new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100), 32));
+            player = _entityComponentSystem.Create(new InputComponent(), new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100), 32));
             //_entityComponentSystem.Create(new RenderComponent("player", new Rectangle(32, 0, 32, 32)), new PhysicsComponent(new Vector2(200, 100)));
 
             _entityComponentSystem.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem());
@@ -32,9 +34,18 @@ namespace Drakborgen.States {
             _entityComponentSystem.Update(deltaTime);
 
             _collisionSystem.Collide(_entityComponentSystem.GetAllComponents<PhysicsComponent>(), _map);
+            _collisionSystem.Overlap(player.GetComponent<PhysicsComponent>(), _map.Doors, LoadNextMap);
 
             _entityComponentSystem.UpdateBeforeDraw(deltaTime);
             return false;
+        }
+
+        private void LoadNextMap(ICollidable first, ICollidable second){
+            var tileAaction = second as TileAction;
+            if (tileAaction == null)
+                return;
+
+            tileAaction.OnOverlap();
         }
 
         public override void Unload(){
