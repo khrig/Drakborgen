@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gengine.Entities;
 using Gengine.Map;
@@ -79,8 +79,8 @@ namespace Drakborgen.Prototype {
             return Tiles[x,y];
         }
 
-        public void ClearDebug(){
-            _tiles.ForEach(t => t.DebugDraw = false);
+        public void ForeachTile(Action<Tile> tileAction){
+            _tiles.ForEach(tileAction);
         }
 
         public Tile PositionToTile(float x, float y) {
