@@ -12,5 +12,6 @@ namespace Drakborgen.Components {
         public string TextureName { get; set; }
         public Vector2 RenderPosition { get; set; }
         public Rectangle SourceRectangle { get; set; }
+        public bool DebugDraw { get; set; }
     }
 }

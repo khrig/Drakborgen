@@ -17,9 +17,9 @@ namespace Drakborgen.States {
         private Map _map;
 
         public override void Init(){
-            _collisionSystem = new ArcadeCollisionSystem();
+            _collisionSystem = new ArcadeCollisionSystem(true);
             _entityComponentSystem = new EntityComponentSystem();
-            _entityComponentSystem.Create(new InputComponent(), new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100)));
+            _entityComponentSystem.Create(new InputComponent(), new RenderComponent("player", new Rectangle(0, 0, 32, 32)), new PhysicsComponent(new Vector2(100, 100), 32));
             //_entityComponentSystem.Create(new RenderComponent("player", new Rectangle(32, 0, 32, 32)), new PhysicsComponent(new Vector2(200, 100)));
 
             _entityComponentSystem.RegisterSystem(new InputSystem());
@@ -31,7 +31,7 @@ namespace Drakborgen.States {
 
         public override bool Update(float deltaTime) {
             _entityComponentSystem.Update(deltaTime);
-            _collisionSystem.CheckCollisions(_entityComponentSystem.GetAllComponents<PhysicsComponent>());
+            _collisionSystem.Collide(_entityComponentSystem.GetAllComponents<PhysicsComponent>(), _map);
             return false;
         }
 
@@ -46,7 +46,7 @@ namespace Drakborgen.States {
         }
 
         public override IEnumerable<IRenderable> GetRenderTargets(){
-            return _map.RenderTiles().Concat(_entityComponentSystem.GetAllComponents<RenderComponent>());
+            return _map.RenderTiles().Concat(_entityComponentSystem.GetAllComponents<RenderComponent>()).Concat(_collisionSystem.Collisions);
         }
 
         public override IEnumerable<IRenderableText> GetTextRenderTargets() {
