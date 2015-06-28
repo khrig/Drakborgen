@@ -1,5 +1,5 @@
-﻿using Drakborgen.Components;
-using Gengine.Commands;
+﻿using Gengine.Commands;
+using Gengine.Components;
 using Gengine.EntityComponentSystem;
 using Gengine.Input;
 
@@ -15,6 +15,8 @@ namespace Drakborgen.Systems {
 
         public override void Process(Entity entity, float dt){
             var inputComponent = entity.GetComponent<InputComponent>();
+            inputComponent.DirectionX = 0;
+            inputComponent.DirectionY = 0;
             InputManager.Instance.HandleRealTimeInput(_commandQueue, _commandFactory);
             while (_commandQueue.HasCommands()) {
                 RealTimeCommand(inputComponent, _commandQueue.GetNext());

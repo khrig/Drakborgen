@@ -39,7 +39,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Components\InputComponent.cs" />
+    <Compile Include="Components\AnimationComponent.cs" />
     <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Drakborgen.cs" />
     <Compile Include="Program.cs" />
@@ -47,6 +47,8 @@
     <Compile Include="Prototype\Map.cs" />
     <Compile Include="States\GameState.cs" />
     <Compile Include="States\MainMenu.cs" />
+    <Compile Include="Systems\AnimationMapper.cs" />
+    <Compile Include="Systems\AnimationSystem.cs" />
     <Compile Include="Systems\InputSystem.cs" />
     <Compile Include="Systems\PhysicsSystem.cs" />
     <Compile Include="Systems\RenderSystem.cs" />
