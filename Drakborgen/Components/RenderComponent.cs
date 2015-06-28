@@ -9,6 +9,12 @@ namespace Drakborgen.Components {
             SourceRectangle = sourceRectangle;
         }
 
+        public RenderComponent(string textureName, Rectangle sourceRectangle, Vector2 renderPosition) {
+            TextureName = textureName;
+            SourceRectangle = sourceRectangle;
+            RenderPosition = renderPosition;
+        }
+
         public string TextureName { get; set; }
         public Vector2 RenderPosition { get; set; }
         public Rectangle SourceRectangle { get; set; }

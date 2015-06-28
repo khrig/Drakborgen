@@ -22,19 +22,23 @@ namespace Drakborgen.Prototype {
             _tileCountX = _width/_tileSize + 1;
             _tileCountY = _height / _tileSize + 1;
             Doors = new List<ICollidable>(4);
-            CreateTiles();
         }
 
-        private void CreateTiles() {
+        private void CreateTiles(int room) {
             Tiles = new Tile[_tileCountX, _tileCountY];
-            InitializeGrid();
+            InitializeGrid(room);
             SetFaces();
         }
 
-        private void InitializeGrid(){
+        private void InitializeGrid(int room){
             for (int x = 0; x < _tileCountX; x++){
                 for (int y = 0; y < _tileCountY; y++){
-                    var tile = CreateTile(x, y);
+                    Tile tile;
+                    if(room == 1)
+                        tile = CreateTile(x, y);
+                    else
+                        tile = CreateTileInverse(x, y);
+                    
                     Tiles[x, y] = tile;
                 }
             }
@@ -43,15 +47,36 @@ namespace Drakborgen.Prototype {
         private Tile CreateTile(int x, int y){
             Tile tile;
             if (IsDoor(x, y)){
-                var tileAction = new TileAction("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(6*_tileSize, 0, _tileSize, _tileSize), false);
-                Doors.Add(tileAction);
-                tile = tileAction;
+                var tileWithMapTransition = new TileWithMapTransition("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(6*_tileSize, 0, _tileSize, _tileSize), false);
+                tileWithMapTransition.TargetTileMap = 2;
+                tileWithMapTransition.TargetX = 100;
+                tileWithMapTransition.TargetY = 100;
+                Doors.Add(tileWithMapTransition);
+                tile = tileWithMapTransition;
             } // Collidable tiles
             else if (y == 0 || x == 0 || x*_tileSize == _width - _tileSize || y*_tileSize >= _height - _tileSize){
                 tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(7*_tileSize, 0, _tileSize, _tileSize));
             }
             else{
                 tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(8*_tileSize, 0, _tileSize, _tileSize), false);
+            }
+            return tile;
+        }
+
+        private Tile CreateTileInverse(int x, int y) {
+            Tile tile;
+            if ((x == 9 || x == 10) && y == _tileCountY - 1) {
+                var tileWithMapTransition = new TileWithMapTransition("tiles32.png", new Vector2(x * _tileSize, y * _tileSize), new Rectangle(6 * _tileSize, 0, _tileSize, _tileSize), false);
+                tileWithMapTransition.TargetTileMap = 1;
+                tileWithMapTransition.TargetX = 300;
+                tileWithMapTransition.TargetY = 200;
+                Doors.Add(tileWithMapTransition);
+                tile = tileWithMapTransition;
+            } // Collidable tiles
+            else if (y == 0 || x == 0 || x * _tileSize == _width - _tileSize || y * _tileSize >= _height - _tileSize) {
+                tile = new Tile("tiles32.png", new Vector2(x * _tileSize, y * _tileSize), new Rectangle(8 * _tileSize, 0, _tileSize, _tileSize));
+            } else {
+                tile = new Tile("tiles32.png", new Vector2(x * _tileSize, y * _tileSize), new Rectangle(7 * _tileSize, 0, _tileSize, _tileSize), false);
             }
             return tile;
         }
@@ -106,6 +131,11 @@ namespace Drakborgen.Prototype {
             var tileX = (int)(x / _tileSize);
             var tileY = (int)(y / _tileSize);
             return Tiles[tileX, tileY];
+        }
+
+        public void Load(int targetTileMap){
+            Doors.Clear();
+            CreateTiles(targetTileMap);
         }
     }
 }
