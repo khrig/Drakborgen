@@ -1,5 +1,6 @@
 ﻿using Drakborgen.Components;
 using Gengine.EntityComponentSystem;
+using Gengine.Rendering;
 
 namespace Drakborgen.Systems {
     public class RenderSystem : EntityProcessingSystem{

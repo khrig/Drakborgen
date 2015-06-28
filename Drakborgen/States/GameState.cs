@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Drakborgen.Components;
 using Drakborgen.Prototype;
 using Drakborgen.Systems;
 using Gengine.Animation;
+using Gengine.CollisionDetection;
 using Gengine.Commands;
-using Gengine.Components;
-using Gengine.Entities;
 using Gengine.EntityComponentSystem;
+using Gengine.Input;
 using Gengine.Map;
+using Gengine.Rendering;
 using Gengine.State;
-using Gengine.Systems;
 using Microsoft.Xna.Framework;
 
 namespace Drakborgen.States {

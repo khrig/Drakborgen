@@ -39,7 +39,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Components\AnimationComponent.cs" />
     <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Drakborgen.cs" />
     <Compile Include="Program.cs" />
@@ -52,7 +51,6 @@
     <Compile Include="Systems\InputSystem.cs" />
     <Compile Include="Systems\PhysicsSystem.cs" />
     <Compile Include="Systems\RenderSystem.cs" />
-    <Compile Include="Components\RenderComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">

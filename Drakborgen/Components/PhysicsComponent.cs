@@ -1,4 +1,5 @@
 ﻿using System;
+using Gengine.CollisionDetection;
 using Gengine.Entities;
 using Gengine.EntityComponentSystem;
 using Microsoft.Xna.Framework;

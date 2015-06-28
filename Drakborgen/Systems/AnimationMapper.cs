@@ -1,5 +1,5 @@
 ﻿using Gengine.Animation;
-using Gengine.Components;
+using Gengine.Input;
 
 namespace Drakborgen.Systems {
     public class AnimationMapper : IAnimationMapper {

@@ -1,6 +1,6 @@
 ﻿using Drakborgen.Components;
-using Gengine.Components;
 using Gengine.EntityComponentSystem;
+using Gengine.Input;
 using Microsoft.Xna.Framework;
 
 namespace Drakborgen.Systems {
