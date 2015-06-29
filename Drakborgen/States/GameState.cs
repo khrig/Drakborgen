@@ -4,7 +4,6 @@ using Drakborgen.Components;
 using Drakborgen.Prototype;
 using Drakborgen.Systems;
 using Gengine.Animation;
-using Gengine.Camera;
 using Gengine.CollisionDetection;
 using Gengine.Commands;
 using Gengine.EntityComponentSystem;
@@ -21,6 +20,7 @@ namespace Drakborgen.States {
         private readonly MapLoader _mapLoader;
         private Entity _player;
         private static int _currentRoom = 1;
+        private static int _turns = 3;
 
         public GameState(){
             _collisionSystem = new ArcadeCollisionSystem(true);
@@ -39,7 +39,6 @@ namespace Drakborgen.States {
             _mapLoader.Load(World, _currentRoom);
 
             AddRenderable(_mapLoader.RenderTiles());
-            AddRenderable(_collisionSystem.Collisions);
             AddRenderable(_entityComponentSystem.GetAllComponents<RenderComponent>());
         }
 
@@ -48,7 +47,7 @@ namespace Drakborgen.States {
 
             _collisionSystem.Collide(_entityComponentSystem.GetAllComponents<PhysicsComponent>(), _mapLoader.CollisionLayer);
             _collisionSystem.Overlap(_player.GetComponent<PhysicsComponent>(), _mapLoader.Doors, OnDoorOverlap);
-
+            
             _entityComponentSystem.UpdateBeforeDraw(deltaTime);
             return false;
         }
@@ -84,10 +83,17 @@ namespace Drakborgen.States {
             var door = second as TileWithMapTransition;
             if (door != null) {
                 _currentRoom = door.TargetTileMap;
-                StateManager.PushState(new FadeTransition(0.5f, "game", () =>{
-                    _player.GetComponent<PhysicsComponent>().Position = new Vector2(door.TargetX, door.TargetY);
-                    _player.GetComponent<RenderComponent>().RenderPosition = new Vector2(door.TargetX, door.TargetY);
-                }));
+                _turns--;
+                if (_turns <= 0){
+                    StateManager.ClearStates();
+                    StateManager.PushState(new FadeTransition(0.5f, "mainmenu"));
+                }
+                else{
+                    StateManager.PushState(new FadeTransition(0.5f, "game", () =>{
+                        _player.GetComponent<PhysicsComponent>().Position = new Vector2(door.TargetX, door.TargetY);
+                        _player.GetComponent<RenderComponent>().RenderPosition = new Vector2(door.TargetX, door.TargetY);
+                    }));
+                }
                 return true;
             }
             return false;
