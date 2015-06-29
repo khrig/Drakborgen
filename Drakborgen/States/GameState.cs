@@ -18,14 +18,13 @@ namespace Drakborgen.States {
         private readonly ICollisionSystem _collisionSystem;
         private readonly MapLoader _mapLoader;
         private Entity _player;
-        private static int _currentRoom = 1;
-        private static int _turns = 3;
-
+        
         public GameState(){
             _collisionSystem = new ArcadeCollisionSystem(true);
             EntityWorld.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
             EntityWorld.RegisterRenderSystem(new RenderSystem());
             _mapLoader = new MapLoader();
+            ResetGameWorld();
         }
 
         public override void Init(){
@@ -34,7 +33,7 @@ namespace Drakborgen.States {
                 new PhysicsComponent(new Vector2(100, 100), 32),
                 new AnimationComponent(GetPlayerAnimations()));
 
-            _mapLoader.Load(World, _currentRoom);
+            _mapLoader.Load(World, GetStateValue<int>("room"));
 
             AddRenderable(_mapLoader.RenderTiles());
             AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());
@@ -73,15 +72,15 @@ namespace Drakborgen.States {
         private bool OnDoorOverlap(ICollidable first, ICollidable second) {
             var door = second as TileWithMapTransition;
             if (door != null) {
-                _currentRoom = door.TargetTileMap;
-                _turns--;
-                if (_turns <= 0){
+                SetStateValue("room", door.TargetTileMap);
+                var turns = GetStateValue<int>("turns");
+                turns--;
+                if (turns <= 0) {
                     StateManager.ClearStates();
                     StateManager.PushState(new FadeTransition(0.5f, "mainmenu"));
-                    _turns = 3;
-                    _currentRoom = 1;
-                }
-                else{
+                    ResetGameWorld();
+                } else {
+                    SetStateValue("turns", turns);
                     StateManager.PushState(new FadeTransition(0.5f, "game", () =>{
                         _player.GetComponent<PhysicsComponent>().Position = new Vector2(door.TargetX, door.TargetY);
                         _player.GetComponent<RenderComponent>().RenderPosition = new Vector2(door.TargetX, door.TargetY);
@@ -90,6 +89,11 @@ namespace Drakborgen.States {
                 return true;
             }
             return false;
+        }
+
+        private void ResetGameWorld() {
+            SetStateValue("turns", 3);
+            SetStateValue("room", 1);
         }
 
         private Dictionary<string, Animation> GetPlayerAnimations(){
