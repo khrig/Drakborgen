@@ -15,7 +15,6 @@ using Microsoft.Xna.Framework;
 
 namespace Drakborgen.States {
     public class GameState : SceneState {
-        private readonly EntityComponentSystem _entityComponentSystem;
         private readonly ICollisionSystem _collisionSystem;
         private readonly MapLoader _mapLoader;
         private Entity _player;
@@ -24,39 +23,31 @@ namespace Drakborgen.States {
 
         public GameState(){
             _collisionSystem = new ArcadeCollisionSystem(true);
-            _entityComponentSystem = new EntityComponentSystem();
-            _entityComponentSystem.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
-            _entityComponentSystem.RegisterRenderSystem(new RenderSystem());
+            EntityWorld.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
+            EntityWorld.RegisterRenderSystem(new RenderSystem());
             _mapLoader = new MapLoader();
         }
 
         public override void Init(){
-            _player = _entityComponentSystem.Create(new InputComponent(), 
-                new RenderComponent("player", new Rectangle(0, 0, 32, 32), new Vector2(100, 100)), 
+            _player = AddEntity(new InputComponent(),
+                new RenderComponent("player", new Rectangle(0, 0, 32, 32), new Vector2(100, 100)),
                 new PhysicsComponent(new Vector2(100, 100), 32),
                 new AnimationComponent(GetPlayerAnimations()));
 
             _mapLoader.Load(World, _currentRoom);
 
             AddRenderable(_mapLoader.RenderTiles());
-            AddRenderable(_entityComponentSystem.GetAllComponents<RenderComponent>());
+            AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());
         }
 
         public override bool Update(float deltaTime) {
-            _entityComponentSystem.Update(deltaTime);
+            EntityWorld.Update(deltaTime);
 
-            _collisionSystem.Collide(_entityComponentSystem.GetAllComponents<PhysicsComponent>(), _mapLoader.CollisionLayer);
+            _collisionSystem.Collide(EntityWorld.GetAllComponents<PhysicsComponent>(), _mapLoader.CollisionLayer);
             _collisionSystem.Overlap(_player.GetComponent<PhysicsComponent>(), _mapLoader.Doors, OnDoorOverlap);
-            
-            _entityComponentSystem.UpdateBeforeDraw(deltaTime);
-            return false;
-        }
 
-        public override void Unload(){
-            RemoveRenderable(_mapLoader.RenderTiles());
-            RemoveRenderable(_collisionSystem.Collisions);
-            RemoveRenderable(_entityComponentSystem.GetAllComponents<RenderComponent>());
-            _entityComponentSystem.Remove(_player);
+            EntityWorld.UpdateBeforeDraw(deltaTime);
+            return false;
         }
 
         public override void HandleCommands(CommandQueue commandQueue){
@@ -87,6 +78,8 @@ namespace Drakborgen.States {
                 if (_turns <= 0){
                     StateManager.ClearStates();
                     StateManager.PushState(new FadeTransition(0.5f, "mainmenu"));
+                    _turns = 3;
+                    _currentRoom = 1;
                 }
                 else{
                     StateManager.PushState(new FadeTransition(0.5f, "game", () =>{
