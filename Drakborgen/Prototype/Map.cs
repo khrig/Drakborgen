@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gengine.CollisionDetection;
-using Gengine.Entities;
 using Gengine.Map;
 using Gengine.Rendering;
 using Microsoft.Xna.Framework;

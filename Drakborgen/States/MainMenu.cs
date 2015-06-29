@@ -19,7 +19,6 @@ namespace Drakborgen.States {
             if (command == "Enter") {
                 if (SelectedOption == "Exit") {
                     StateManager.ClearStates();
-                    //StateManager.PushState("game");
                 } else if (SelectedOption == "Start") {
                     StateManager.ClearStates();
                     StateManager.PushState("game");
