@@ -49,18 +49,11 @@ namespace Drakborgen.States {
             return false;
         }
 
-        public override void HandleCommands(CommandQueue commandQueue){
-            while (commandQueue.HasCommands()) {
-                var command = commandQueue.GetNext();
-                if (HandleCommand(command)) return;
-            }
-        }
-
         public override IEnumerable<IRenderableText> GetTextRenderTargets() {
             return Enumerable.Empty<IRenderableText>();
         }
 
-        private bool HandleCommand(ICommand command) {
+        protected override bool HandleCommand(ICommand command) {
             if (command.Name == "Escape") {
                 StateManager.ClearStates();
                 StateManager.PushState(new FadeTransition(0.5f, "mainmenu"));
