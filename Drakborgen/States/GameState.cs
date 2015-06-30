@@ -76,7 +76,7 @@ namespace Drakborgen.States {
                     ResetGameWorld();
                 } else {
                     SetStateValue("turns", turns);
-                    StateManager.PushState(new FadeTransition(0.5f, "game", () =>{
+                    StateManager.PushState(new FadeTransition(0.1f, "game", () =>{
                         _player.GetComponent<PhysicsComponent>().Position = new Vector2(door.TargetX, door.TargetY);
                         _player.GetComponent<RenderComponent>().RenderPosition = new Vector2(door.TargetX, door.TargetY);
                     }));
