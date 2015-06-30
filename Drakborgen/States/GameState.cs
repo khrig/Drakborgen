@@ -4,6 +4,7 @@ using Drakborgen.Components;
 using Drakborgen.Prototype;
 using Drakborgen.Systems;
 using Gengine.Animation;
+using Gengine.Camera;
 using Gengine.CollisionDetection;
 using Gengine.Commands;
 using Gengine.EntityComponentSystem;
@@ -16,34 +17,35 @@ using Microsoft.Xna.Framework;
 namespace Drakborgen.States {
     public class GameState : SceneState {
         private readonly ICollisionSystem _collisionSystem;
-        private readonly MapLoader _mapLoader;
+        private readonly CastleLoader _castleLoader;
         private Entity _player;
         
         public GameState(){
             _collisionSystem = new ArcadeCollisionSystem(true);
             EntityWorld.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
             EntityWorld.RegisterRenderSystem(new RenderSystem());
-            _mapLoader = new MapLoader();
+            _castleLoader = new CastleLoader();
+            _castleLoader.GenerateCastle();
             ResetGameWorld();
         }
 
         public override void Init(){
             _player = AddEntity(new InputComponent(),
                 new RenderComponent("player", new Rectangle(0, 0, 32, 32), new Vector2(100, 100)),
-                new PhysicsComponent(new Vector2(100, 100), 32),
+                new PhysicsComponent(new Vector2(World.View.Width * 0.5f - 16, World.View.Height * 0.5f - 16), 32),
                 new AnimationComponent(GetPlayerAnimations()));
 
-            _mapLoader.Load(World, GetStateValue<int>("room"));
+            _castleLoader.Load(GetStateValue<int>("room"));
 
-            AddRenderable(_mapLoader.RenderTiles());
+            AddRenderable(_castleLoader.RenderTiles());
             AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());
         }
 
         public override bool Update(float deltaTime) {
             EntityWorld.Update(deltaTime);
 
-            _collisionSystem.Collide(EntityWorld.GetAllComponents<PhysicsComponent>(), _mapLoader.CollisionLayer);
-            _collisionSystem.Overlap(_player.GetComponent<PhysicsComponent>(), _mapLoader.Doors, OnDoorOverlap);
+            _collisionSystem.Collide(EntityWorld.GetAllComponents<PhysicsComponent>(), _castleLoader.CollisionLayer);
+            _collisionSystem.Overlap(_player.GetComponent<PhysicsComponent>(), _castleLoader.Doors, OnDoorOverlap);
 
             EntityWorld.UpdateBeforeDraw(deltaTime);
             return false;

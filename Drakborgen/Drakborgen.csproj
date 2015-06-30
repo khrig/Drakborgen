@@ -43,8 +43,8 @@
     <Compile Include="Drakborgen.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Prototype\Map.cs" />
-    <Compile Include="Prototype\MapLoader.cs" />
+    <Compile Include="Prototype\Room.cs" />
+    <Compile Include="Prototype\CastleLoader.cs" />
     <Compile Include="States\GameState.cs" />
     <Compile Include="States\MainMenu.cs" />
     <Compile Include="Systems\AnimationMapper.cs" />

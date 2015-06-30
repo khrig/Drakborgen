@@ -6,7 +6,7 @@ using Gengine.Rendering;
 using Microsoft.Xna.Framework;
 
 namespace Drakborgen.Prototype {
-    public class Map : ICollidableMap {
+    public class Room : ICollidableMap {
         private readonly int _width;
         private readonly int _height;
         private readonly int _tileSize;
@@ -15,12 +15,22 @@ namespace Drakborgen.Prototype {
         public Tile[,] Tiles { get; set; }
         public int TileSize { get { return _tileSize; } }
         public List<ICollidable> Doors { get; private set; }
- 
-        public Map(int width, int height, int tileSize){
+
+        private string _spriteName = "dungeon";
+
+        public int Width{
+            get { return _width; }
+        }
+
+        public int Height {
+            get { return _height; }
+        }
+
+        public Room(int width, int height, int tileSize){
             _width = width;
             _height = height;
             _tileSize = tileSize;
-            _tileCountX = _width/_tileSize + 1;
+            _tileCountX = _width/_tileSize;
             _tileCountY = _height / _tileSize + 1;
             Doors = new List<ICollidable>(4);
         }
@@ -48,36 +58,71 @@ namespace Drakborgen.Prototype {
         private Tile CreateTile(int x, int y){
             Tile tile;
             if (IsDoor(x, y)){
-                var tileWithMapTransition = new TileWithMapTransition("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(6*_tileSize, 0, _tileSize, _tileSize), false);
+                int doorTile = 0;
+                if (x == 9)
+                    doorTile = 5*_tileSize;
+                else
+                    doorTile = 6 * _tileSize;
+
+
+                var tileWithMapTransition = new TileWithMapTransition(_spriteName, new Vector2(x * _tileSize, y * _tileSize), new Rectangle(doorTile, 0, _tileSize, _tileSize), false);
                 tileWithMapTransition.TargetTileMap = 2;
-                tileWithMapTransition.TargetX = 100;
-                tileWithMapTransition.TargetY = 100;
+                tileWithMapTransition.TargetX = 308;
+                tileWithMapTransition.TargetY = 316;
                 Doors.Add(tileWithMapTransition);
                 tile = tileWithMapTransition;
             } // Collidable tiles
-            else if (y == 0 || x == 0 || x*_tileSize == _width - _tileSize || y*_tileSize >= _height - _tileSize){
-                tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(7*_tileSize, 0, _tileSize, _tileSize));
+            else if (y == 0 || x == 0 || x == _tileCountX - 1 || y == _tileCountY - 1) {
+                tile = new Tile(_spriteName, new Vector2(x * _tileSize, y * _tileSize), GetTileSource(x, y));
             }
             else{
-                tile = new Tile("tiles32.png", new Vector2(x*_tileSize, y*_tileSize), new Rectangle(8*_tileSize, 0, _tileSize, _tileSize), false);
+                tile = new Tile(_spriteName, new Vector2(x * _tileSize, y * _tileSize), new Rectangle(1 * _tileSize, 32, _tileSize, _tileSize), false);
             }
             return tile;
         }
 
+        private Rectangle GetTileSource(int x, int y){
+            if(x == 0 && y == 0) // top left
+                return new Rectangle(0, 0, _tileSize, _tileSize);
+            if (x == _tileCountX - 1 && y == 0) // top right
+                return new Rectangle(64, 0, _tileSize, _tileSize);
+            if (x == 0 && y == _tileCountY - 1) // bottom left
+                return new Rectangle(0, 64, _tileSize, _tileSize);
+            if (x == _tileCountX - 1 && y == _tileCountY - 1) // bottom right
+                return new Rectangle(64, 64, _tileSize, _tileSize);
+
+            if(x == 0) // left row
+                return new Rectangle(0, 32, _tileSize, _tileSize);
+            if (y == 0) // top row
+                return new Rectangle(32, 0, _tileSize, _tileSize);
+            if (x == _tileCountX - 1) // right row
+                return new Rectangle(64, 32, _tileSize, _tileSize);
+            if (y == _tileCountY - 1) // bottom row
+                return new Rectangle(32, 64, _tileSize, _tileSize);
+
+            return new Rectangle(2*32, 3 * 32, _tileSize, _tileSize);
+        }
+
         private Tile CreateTileInverse(int x, int y) {
             Tile tile;
-            if ((x == 9 || x == 10) && y == _tileCountY - 1) {
-                var tileWithMapTransition = new TileWithMapTransition("tiles32.png", new Vector2(x * _tileSize, y * _tileSize), new Rectangle(6 * _tileSize, 0, _tileSize, _tileSize), false);
+            if ((x == 9 || x == 10) && y == _tileCountY - 1){
+                Rectangle doorTile;
+                if (x == 9)
+                    doorTile = new Rectangle(5 * _tileSize, 3*32, _tileSize, _tileSize);
+                else
+                    doorTile = new Rectangle(6 * _tileSize, 3*32, _tileSize, _tileSize);
+
+                var tileWithMapTransition = new TileWithMapTransition(_spriteName, new Vector2(x * _tileSize, y * _tileSize), doorTile, false);
                 tileWithMapTransition.TargetTileMap = 1;
-                tileWithMapTransition.TargetX = 300;
-                tileWithMapTransition.TargetY = 200;
+                tileWithMapTransition.TargetX = 304;
+                tileWithMapTransition.TargetY = 34;
                 Doors.Add(tileWithMapTransition);
                 tile = tileWithMapTransition;
             } // Collidable tiles
-            else if (y == 0 || x == 0 || x * _tileSize == _width - _tileSize || y * _tileSize >= _height - _tileSize) {
-                tile = new Tile("tiles32.png", new Vector2(x * _tileSize, y * _tileSize), new Rectangle(8 * _tileSize, 0, _tileSize, _tileSize));
+            else if (y == 0 || x == 0 || x == _tileCountX - 1 || y == _tileCountY - 1) {
+                tile = new Tile(_spriteName, new Vector2(x * _tileSize, y * _tileSize), GetTileSource(x, y));
             } else {
-                tile = new Tile("tiles32.png", new Vector2(x * _tileSize, y * _tileSize), new Rectangle(7 * _tileSize, 0, _tileSize, _tileSize), false);
+                tile = new Tile(_spriteName, new Vector2(x * _tileSize, y * _tileSize), new Rectangle(1 * _tileSize, 32, _tileSize, _tileSize), false);
             }
             return tile;
         }
