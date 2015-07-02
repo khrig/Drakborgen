@@ -3,19 +3,21 @@ using System.Diagnostics;
 using System.Linq;
 using Gengine.CollisionDetection;
 using Gengine.DungeonGenerators;
-using Gengine.EntityComponentSystem;
 using Gengine.Map;
 using Gengine.Rendering;
+using Gengine.UI;
+using Microsoft.Xna.Framework;
 
 namespace Drakborgen.Prototype {
-    public class CastleLoader {
+    public class Castle {
         private readonly Dictionary<int, CollidableRoom> _rooms;
         private readonly CornerToMidGenerator _dungeonGenerator;
         private int _currentRoom = 1;
 
-        public CastleLoader(){
+        public Castle(){
             _dungeonGenerator = new CornerToMidGenerator();
             _rooms = new Dictionary<int, CollidableRoom>(30);
+            _currentRoomText = new TextNode("text", "", new Vector2(10,10), Color.Azure);
         }
 
         public void GenerateCastle(){
@@ -39,7 +41,13 @@ namespace Drakborgen.Prototype {
 
         public void Load(int id){
             _currentRoom = id;
+            _currentRoomText.Text = id.ToString();
             Debug.WriteLine(id);
+        }
+
+        private TextNode _currentRoomText;
+        public TextNode RoomId{
+            get { return _currentRoomText; }
         }
 
         public IEnumerable<IRenderable> RenderTiles(){

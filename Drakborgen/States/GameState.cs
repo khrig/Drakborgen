@@ -16,15 +16,15 @@ using Microsoft.Xna.Framework;
 namespace Drakborgen.States {
     public class GameState : SceneState {
         private readonly ICollisionSystem _collisionSystem;
-        private readonly CastleLoader _castleLoader;
+        private readonly Castle _castle;
         private Entity _player;
         
         public GameState(){
             _collisionSystem = new ArcadeCollisionSystem(true);
             EntityWorld.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
             EntityWorld.RegisterRenderSystem(new RenderSystem());
-            _castleLoader = new CastleLoader();
-            _castleLoader.GenerateCastle();
+            _castle = new Castle();
+            _castle.GenerateCastle();
             ResetGameWorld();
         }
 
@@ -34,24 +34,24 @@ namespace Drakborgen.States {
                 new PhysicsComponent(new Vector2(World.View.Width * 0.5f - 16, World.View.Height * 0.5f - 16), 32),
                 new AnimationComponent(GetPlayerAnimations()));
 
-            _castleLoader.Load(GetStateValue<int>("room"));
+            _castle.Load(GetStateValue<int>("room"));
 
-            AddRenderable(_castleLoader.RenderTiles());
+            AddRenderable(_castle.RenderTiles());
             AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());
         }
 
         public override bool Update(float deltaTime) {
             EntityWorld.Update(deltaTime);
 
-            _collisionSystem.Collide(EntityWorld.GetAllComponents<PhysicsComponent>(), _castleLoader.CollisionLayer);
-            _collisionSystem.Overlap(_player.GetComponent<PhysicsComponent>(), _castleLoader.Doors, OnDoorOverlap);
+            _collisionSystem.Collide(EntityWorld.GetAllComponents<PhysicsComponent>(), _castle.CollisionLayer);
+            _collisionSystem.Overlap(_player.GetComponent<PhysicsComponent>(), _castle.Doors, OnDoorOverlap);
 
             EntityWorld.UpdateBeforeDraw(deltaTime);
             return false;
         }
 
-        public override IEnumerable<IRenderableText> GetTextRenderTargets() {
-            return Enumerable.Empty<IRenderableText>();
+        public override IEnumerable<IRenderableText> GetTextRenderTargets(){
+            yield return _castle.RoomId;
         }
 
         protected override bool HandleCommand(ICommand command) {
