@@ -38,6 +38,7 @@ namespace Drakborgen {
             _engine.AddFont("text", "Fonts/04b_03");
             _engine.AddTexture("player", "Sprites/hero32");
             _engine.AddTexture("dungeon", "Sprites/tilemap32");
+            _engine.AddTexture("minimap", "Sprites/minimap");
 
             _engine.SetDebugDraw(false); // disabled is default
         }

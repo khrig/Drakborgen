@@ -45,7 +45,7 @@ namespace Drakborgen.Prototype {
             Debug.WriteLine(id);
         }
 
-        private TextNode _currentRoomText;
+        private readonly TextNode _currentRoomText;
         public TextNode RoomId{
             get { return _currentRoomText; }
         }

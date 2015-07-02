@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Drakborgen.States {
     public class MainMenu : BaseMenuState {
-        public override void Init() {
+        public override void Run() {
             SetAction(HandleCommand);
             SetTitle(new MenuOption("text", "Drakborgen", Color.Red, new Vector2(World.View.Center.X - TextExtensions.GetContentLength("text", "Drakborgen").Length() / 2, World.View.Center.Y - 50)));
             AddOption(new MenuOption("text", "Start", Color.White, new Vector2(World.View.Center.X - TextExtensions.GetContentLength("text", "Start").Length() / 2, World.View.Center.Y + 40)));
@@ -21,7 +21,7 @@ namespace Drakborgen.States {
                     StateManager.ClearStates();
                 } else if (SelectedOption == "Start") {
                     StateManager.ClearStates();
-                    StateManager.PushState("game");
+                    StateManager.PushAndSetupState("game");                    
                 }
             }
         }

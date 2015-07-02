@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Drakborgen.Components;
 using Drakborgen.Prototype;
 using Drakborgen.Systems;
@@ -11,6 +10,7 @@ using Gengine.Input;
 using Gengine.Map;
 using Gengine.Rendering;
 using Gengine.State;
+using Gengine.UI;
 using Microsoft.Xna.Framework;
 
 namespace Drakborgen.States {
@@ -24,18 +24,21 @@ namespace Drakborgen.States {
             EntityWorld.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
             EntityWorld.RegisterRenderSystem(new RenderSystem());
             _castle = new Castle();
+        }
+
+        public override void Setup() {
             _castle.GenerateCastle();
             ResetGameWorld();
         }
 
-        public override void Init(){
+        public override void Run() {
             _player = AddEntity(new InputComponent(),
                 new RenderComponent("player", new Rectangle(0, 0, 32, 32), new Vector2(100, 100)),
                 new PhysicsComponent(new Vector2(World.View.Width * 0.5f - 16, World.View.Height * 0.5f - 16), 32),
                 new AnimationComponent(GetPlayerAnimations()));
 
             _castle.Load(GetStateValue<int>("room"));
-
+            AddRenderable(new SpriteNode("minimap", new Vector2(30, 30), new Rectangle(0, 0, 64, 16)), 2);
             AddRenderable(_castle.RenderTiles());
             AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());
         }
@@ -49,7 +52,7 @@ namespace Drakborgen.States {
             EntityWorld.UpdateBeforeDraw(deltaTime);
             return false;
         }
-
+        
         public override IEnumerable<IRenderableText> GetTextRenderTargets(){
             yield return _castle.RoomId;
         }
