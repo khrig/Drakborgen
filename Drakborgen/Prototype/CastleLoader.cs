@@ -1,39 +1,54 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Gengine.CollisionDetection;
+using Gengine.DungeonGenerators;
+using Gengine.EntityComponentSystem;
 using Gengine.Map;
 using Gengine.Rendering;
 
 namespace Drakborgen.Prototype {
     public class CastleLoader {
-        private Room _room;
-
-        private readonly Dictionary<int, Room> _rooms;
+        private readonly Dictionary<int, CollidableRoom> _rooms;
+        private readonly CornerToMidGenerator _dungeonGenerator;
+        private int _currentRoom = 1;
 
         public CastleLoader(){
-            _rooms = new Dictionary<int, Room>(120);
+            _dungeonGenerator = new CornerToMidGenerator();
+            _rooms = new Dictionary<int, CollidableRoom>(30);
         }
 
-        public void GenerateCastle() {
-            var room = new Room(640, 360, 32);
-            room.Load(1);
-            var room2 = new Room(640, 360, 32);
-            room2.Load(2);
-            _rooms.Add(1, room);
-            _rooms.Add(2, room2);
+        public void GenerateCastle(){
+            Map map = _dungeonGenerator.CreateDungeon(10, 10);
+
+            for (int y = 0;y < map.Height;y++) {
+                for (int x = 0;x < map.Width;x++) {
+                    if(map[x, y].IsLegitRoom)
+                        _rooms.Add(map[x, y].Id, CreateGameRoom(map[x, y]));
+                }
+            }
+
+            _currentRoom = map.GetStartRoom().Id;
+        }
+
+        private CollidableRoom CreateGameRoom(Room room){
+            var collidableRoom = new CollidableRoom(640, 360, 32);
+            collidableRoom.CreateTiles("dungeon", room.Doors);
+            return collidableRoom;
         }
 
         public void Load(int id){
-            _room = _rooms[id];
+            _currentRoom = id;
+            Debug.WriteLine(id);
         }
 
         public IEnumerable<IRenderable> RenderTiles(){
-            if (_room == null)
+            if (_rooms[_currentRoom] == null)
                 return Enumerable.Empty<IRenderable>();
-            return _room.RenderTiles();
+            return _rooms[_currentRoom].RenderTiles();
         }
 
-        public ICollidableMap CollisionLayer { get { return _room; } }
-        public IEnumerable<ICollidable> Doors { get { return _room.Doors;  } }
+        public ICollidableMap CollisionLayer { get { return _rooms[_currentRoom]; } }
+        public IEnumerable<ICollidable> Doors { get { return _rooms[_currentRoom].Doors; } }
     }
 }

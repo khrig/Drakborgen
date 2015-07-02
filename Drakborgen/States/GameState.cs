@@ -4,7 +4,6 @@ using Drakborgen.Components;
 using Drakborgen.Prototype;
 using Drakborgen.Systems;
 using Gengine.Animation;
-using Gengine.Camera;
 using Gengine.CollisionDetection;
 using Gengine.Commands;
 using Gengine.EntityComponentSystem;
@@ -97,23 +96,27 @@ namespace Drakborgen.States {
 
             var animations = new Dictionary<string, Animation>();
             var idle = new Animation();
-            idle.AddFrame(float.MaxValue, new Rectangle(32, 32, 32, 32));
+            idle.AddFrame(float.MaxValue, new Rectangle(0, 0, 32, 32));
             animations.Add("idle", idle);
+
             var moveleft = new Animation();
-            moveleft.AddFrame(100.8f, new Rectangle(128, 0, 32, 32));
-            moveleft.AddFrame(100.2f, new Rectangle(160, 0, 32, 32));
+            moveleft.AddFrame(100.8f, new Rectangle(352, 0, 32, 32));
+            moveleft.AddFrame(100.2f, new Rectangle(384, 0, 32, 32));
             animations.Add("moveleft", moveleft);
+            
             var moveright = new Animation();
-            moveright.AddFrame(100.8f, new Rectangle(0, 0, 32, 32));
-            moveright.AddFrame(100.2f, new Rectangle(32, 0, 32, 32));
+            moveright.AddFrame(100.8f, new Rectangle(416, 0, 32, 32));
+            moveright.AddFrame(100.2f, new Rectangle(448, 0, 32, 32));
             animations.Add("moveright", moveright);
+            
             var moveup = new Animation();
-            moveup.AddFrame(100.8f, new Rectangle(0, 32, 32, 32));
-            moveup.AddFrame(100.2f, new Rectangle(32, 32, 32, 32));
+            moveup.AddFrame(100.8f, new Rectangle(480, 0, 32, 32));
+            moveup.AddFrame(100.2f, new Rectangle(512, 0, 32, 32));
             animations.Add("moveup", moveup);
+            
             var movedown = new Animation();
-            movedown.AddFrame(100.8f, new Rectangle(128, 32, 32, 32));
-            movedown.AddFrame(100.2f, new Rectangle(0, 32, 32, 32));
+            movedown.AddFrame(100.8f, new Rectangle(288, 0, 32, 32));
+            movedown.AddFrame(100.2f, new Rectangle(320, 0, 32, 32));
             animations.Add("movedown", movedown);
             return animations;
         }

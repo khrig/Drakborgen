@@ -36,8 +36,7 @@ namespace Drakborgen {
             _engine.AddState("game", new GameState());
             _engine.StartWith("mainmenu");
             _engine.AddFont("text", "Fonts/04b_03");
-            _engine.AddTexture("tiles32.png", "Sprites/tiles32");
-            _engine.AddTexture("player", "Sprites/player32_full");
+            _engine.AddTexture("player", "Sprites/hero32");
             _engine.AddTexture("dungeon", "Sprites/tilemap32");
 
             _engine.SetDebugDraw(false); // disabled is default
