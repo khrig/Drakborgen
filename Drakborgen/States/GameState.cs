@@ -10,7 +10,6 @@ using Gengine.Input;
 using Gengine.Map;
 using Gengine.Rendering;
 using Gengine.State;
-using Gengine.UI;
 using Microsoft.Xna.Framework;
 
 namespace Drakborgen.States {
@@ -18,16 +17,19 @@ namespace Drakborgen.States {
         private readonly ICollisionSystem _collisionSystem;
         private readonly Castle _castle;
         private Entity _player;
+        private MiniMap _miniMap;
         
         public GameState(){
             _collisionSystem = new ArcadeCollisionSystem(true);
             EntityWorld.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
             EntityWorld.RegisterRenderSystem(new RenderSystem());
             _castle = new Castle();
+            _miniMap = new MiniMap();
         }
 
         public override void Setup() {
             _castle.GenerateCastle();
+            
             ResetGameWorld();
         }
 
@@ -38,7 +40,7 @@ namespace Drakborgen.States {
                 new AnimationComponent(GetPlayerAnimations()));
 
             _castle.Load(GetStateValue<int>("room"));
-            AddRenderable(new SpriteNode("minimap", new Vector2(30, 30), new Rectangle(0, 0, 64, 16)), 2);
+            AddRenderable(_miniMap.RenderTiles(), 2);
             AddRenderable(_castle.RenderTiles());
             AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());
         }

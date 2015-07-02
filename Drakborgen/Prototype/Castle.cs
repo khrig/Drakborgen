@@ -33,6 +33,10 @@ namespace Drakborgen.Prototype {
             _currentRoom = map.GetStartRoom().Id;
         }
 
+        public void GetSurroundingRooms(){
+            
+        }
+
         private CollidableRoom CreateGameRoom(Room room){
             var collidableRoom = new CollidableRoom(640, 360, 32);
             collidableRoom.CreateTiles("dungeon", room.Doors);
