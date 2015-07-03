@@ -40,7 +40,7 @@ namespace Drakborgen.States {
                 new AnimationComponent(GetPlayerAnimations()));
 
             _castle.Load(GetStateValue<int>("room"));
-            _miniMap.UpdateMiniMap(_castle.CurrentRoom.PositionInGridX, _castle.CurrentRoom.PositionInGridY, 2);
+            _miniMap.SetCurrentRoomPosition(_castle.CurrentRoom.PositionInGridX, _castle.CurrentRoom.PositionInGridY);
             AddRenderable(_miniMap.GetRenderables(), 2);
             AddRenderable(_castle.RenderTiles());
             AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());

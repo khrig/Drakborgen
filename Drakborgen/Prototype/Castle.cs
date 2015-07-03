@@ -10,13 +10,13 @@ using Microsoft.Xna.Framework;
 
 namespace Drakborgen.Prototype {
     public class Castle {
-        private readonly Dictionary<int, CollidableRoom> _rooms;
+        private readonly Dictionary<int, GameRoom> _rooms;
         private readonly CornerToMidGenerator _dungeonGenerator;
         private int _currentRoom = 1;
 
         public Castle(){
             _dungeonGenerator = new CornerToMidGenerator();
-            _rooms = new Dictionary<int, CollidableRoom>(30);
+            _rooms = new Dictionary<int, GameRoom>(30);
             _currentRoomText = new TextNode("text", "", new Vector2(10,10), Color.Azure);
         }
 
@@ -35,10 +35,10 @@ namespace Drakborgen.Prototype {
             return map;
         }
 
-        private CollidableRoom CreateGameRoom(Room room){
-            var collidableRoom = new CollidableRoom(640, 360, 32, room.X, room.Y);
-            collidableRoom.CreateTiles("dungeon", room.Doors);
-            return collidableRoom;
+        private GameRoom CreateGameRoom(Room room){
+            var gameRoom = new GameRoom(640, 360, 32, room.X, room.Y);
+            gameRoom.CreateTiles("dungeon", room.Doors);
+            return gameRoom;
         }
 
         public void Load(int id){
@@ -58,7 +58,7 @@ namespace Drakborgen.Prototype {
             return _rooms[_currentRoom].RenderTiles();
         }
 
-        public CollidableRoom CurrentRoom { get { return _rooms[_currentRoom]; } }
+        public GameRoom CurrentRoom { get { return _rooms[_currentRoom]; } }
         public ICollidableMap CollisionLayer { get { return _rooms[_currentRoom]; } }
         public IEnumerable<ICollidable> Doors { get { return _rooms[_currentRoom].Doors; } }
     }

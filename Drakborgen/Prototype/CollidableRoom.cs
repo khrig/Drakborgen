@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Gengine.CollisionDetection;
 using Gengine.DungeonGenerators;
 using Gengine.Map;
@@ -8,7 +7,7 @@ using Gengine.Rendering;
 using Microsoft.Xna.Framework;
 
 namespace Drakborgen.Prototype {
-    public class CollidableRoom : ICollidableMap {
+    public class GameRoom : ICollidableMap {
         private readonly int _width;
         private readonly int _height;
         private readonly int _tileSize;
@@ -31,7 +30,7 @@ namespace Drakborgen.Prototype {
             get { return _height; }
         }
 
-        public CollidableRoom(int width, int height, int tileSize, int x, int y){
+        public GameRoom(int width, int height, int tileSize, int x, int y){
             _width = width;
             _height = height;
             _tileSize = tileSize;
