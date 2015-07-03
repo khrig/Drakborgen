@@ -20,7 +20,7 @@ namespace Drakborgen.Prototype {
             _currentRoomText = new TextNode("text", "", new Vector2(10,10), Color.Azure);
         }
 
-        public void GenerateCastle(){
+        public Map GenerateCastle(){
             Map map = _dungeonGenerator.CreateDungeon(10, 10);
 
             for (int y = 0;y < map.Height;y++) {
@@ -30,15 +30,13 @@ namespace Drakborgen.Prototype {
                 }
             }
 
+            map.SetStart(0,0);
             _currentRoom = map.GetStartRoom().Id;
-        }
-
-        public void GetSurroundingRooms(){
-            
+            return map;
         }
 
         private CollidableRoom CreateGameRoom(Room room){
-            var collidableRoom = new CollidableRoom(640, 360, 32);
+            var collidableRoom = new CollidableRoom(640, 360, 32, room.X, room.Y);
             collidableRoom.CreateTiles("dungeon", room.Doors);
             return collidableRoom;
         }
@@ -60,6 +58,7 @@ namespace Drakborgen.Prototype {
             return _rooms[_currentRoom].RenderTiles();
         }
 
+        public CollidableRoom CurrentRoom { get { return _rooms[_currentRoom]; } }
         public ICollidableMap CollisionLayer { get { return _rooms[_currentRoom]; } }
         public IEnumerable<ICollidable> Doors { get { return _rooms[_currentRoom].Doors; } }
     }

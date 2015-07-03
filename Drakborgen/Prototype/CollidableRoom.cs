@@ -18,6 +18,9 @@ namespace Drakborgen.Prototype {
         public int TileSize { get { return _tileSize; } }
         public List<ICollidable> Doors { get; private set; }
 
+        public int PositionInGridX { get; set; }
+        public int PositionInGridY { get; set; }
+
         private string _spriteName;
 
         public int Width{
@@ -28,12 +31,14 @@ namespace Drakborgen.Prototype {
             get { return _height; }
         }
 
-        public CollidableRoom(int width, int height, int tileSize){
+        public CollidableRoom(int width, int height, int tileSize, int x, int y){
             _width = width;
             _height = height;
             _tileSize = tileSize;
             _tileCountX = _width/_tileSize;
             _tileCountY = _height / _tileSize + 1;
+            PositionInGridX = x;
+            PositionInGridY = y;
             Doors = new List<ICollidable>(4);
         }
 
@@ -130,14 +135,6 @@ namespace Drakborgen.Prototype {
             return tile;
         }
 
-        private bool IsDoor(int x, int y, IEnumerable<Door> doors){
-            var doorArray = doors as Door[] ?? doors.ToArray();
-            return ((x == 9 || x == 10) && y == 0 && doorArray.Any(d => d.DoorPosition == DoorPosition.Top))
-                || ((x == 9 || x == 10) && y == _tileCountY - 1 && doorArray.Any(d => d.DoorPosition == DoorPosition.Bottom))
-                || ((y == 5 || y == 6) && x == 0 && doorArray.Any(d => d.DoorPosition == DoorPosition.Left))
-                || ((y == 5 || y == 6) && x == _tileCountX - 1 && doorArray.Any(d => d.DoorPosition == DoorPosition.Right));
-        }
-
         private Rectangle GetTileSource(int x, int y){
             if(x == 0 && y == 0) // top left
                 return new Rectangle(0, 0, _tileSize, _tileSize);
@@ -159,31 +156,6 @@ namespace Drakborgen.Prototype {
 
             return new Rectangle(2*32, 3 * 32, _tileSize, _tileSize);
         }
-
-        //private Tile CreateTileInverse(int x, int y) {
-        //    Tile tile;
-        //    if ((x == 9 || x == 10) && y == _tileCountY - 1){
-        //        Rectangle doorTile;
-        //        if (x == 9)
-        //            doorTile = new Rectangle(5 * _tileSize, 3*32, _tileSize, _tileSize);
-        //        else
-        //            doorTile = new Rectangle(6 * _tileSize, 3*32, _tileSize, _tileSize);
-
-        //        var tileWithMapTransition = new TileWithMapTransition(_spriteName, new Vector2(x * _tileSize, y * _tileSize), doorTile, false);
-        //        tileWithMapTransition.TargetTileMap = 1;
-        //        tileWithMapTransition.TargetX = 304;
-        //        tileWithMapTransition.TargetY = 34;
-        //        Doors.Add(tileWithMapTransition);
-        //        tile = tileWithMapTransition;
-        //    } // Collidable tiles
-        //    else if (y == 0 || x == 0 || x == _tileCountX - 1 || y == _tileCountY - 1) {
-        //        tile = new Tile(_spriteName, new Vector2(x * _tileSize, y * _tileSize), GetTileSource(x, y));
-        //    } else {
-        //        tile = new Tile(_spriteName, new Vector2(x * _tileSize, y * _tileSize), new Rectangle(1 * _tileSize, 32, _tileSize, _tileSize), false);
-        //    }
-        //    return tile;
-        //}
-
 
         private void SetFaces() {
             for (int x = 0;x < _tileCountX;x++) {

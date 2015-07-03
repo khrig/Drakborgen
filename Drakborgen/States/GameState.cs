@@ -16,20 +16,20 @@ namespace Drakborgen.States {
     public class GameState : SceneState {
         private readonly ICollisionSystem _collisionSystem;
         private readonly Castle _castle;
+        private readonly MiniMap _miniMap;
         private Entity _player;
-        private MiniMap _miniMap;
         
         public GameState(){
             _collisionSystem = new ArcadeCollisionSystem(true);
             EntityWorld.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
             EntityWorld.RegisterRenderSystem(new RenderSystem());
             _castle = new Castle();
-            _miniMap = new MiniMap();
+            _miniMap = new MiniMap(20, 20, 16, "minimap");
         }
 
         public override void Setup() {
-            _castle.GenerateCastle();
-            
+            var map = _castle.GenerateCastle();
+            _miniMap.SetMap(map);
             ResetGameWorld();
         }
 
@@ -40,7 +40,8 @@ namespace Drakborgen.States {
                 new AnimationComponent(GetPlayerAnimations()));
 
             _castle.Load(GetStateValue<int>("room"));
-            AddRenderable(_miniMap.RenderTiles(), 2);
+            _miniMap.UpdateMiniMap(_castle.CurrentRoom.PositionInGridX, _castle.CurrentRoom.PositionInGridY, 2);
+            AddRenderable(_miniMap.GetRenderables(), 2);
             AddRenderable(_castle.RenderTiles());
             AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());
         }
@@ -91,7 +92,7 @@ namespace Drakborgen.States {
         }
 
         private void ResetGameWorld() {
-            SetStateValue("turns", 3);
+            SetStateValue("turns", 20);
             SetStateValue("room", 1);
         }
 
