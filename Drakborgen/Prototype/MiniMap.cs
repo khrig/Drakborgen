@@ -9,7 +9,7 @@ namespace Drakborgen.Prototype {
         private readonly string _texture;
         private readonly Vector2 _miniMapRenderPosition;
         private readonly int _tileSize;
-        private Map _map;
+        private DungeonMap _dungeonMap;
         private readonly int _halfMiniMapSize;
         private readonly List<IRenderable> _renderableTiles;
 
@@ -21,8 +21,8 @@ namespace Drakborgen.Prototype {
             _renderableTiles = new List<IRenderable>();
         }
 
-        public void SetMap(Map map){
-            _map = map;
+        public void SetMap(DungeonMap dungeonMap){
+            _dungeonMap = dungeonMap;
         }
 
         public IEnumerable<IRenderable> GetRenderables(){
@@ -36,21 +36,21 @@ namespace Drakborgen.Prototype {
 
         private void CreateSpriteRepresentation(int currentX, int currentY) {
             int yMin = currentY - _halfMiniMapSize >= 0 ? currentY - _halfMiniMapSize : 0;
-            int yMax = currentY + _halfMiniMapSize < _map.Height ? currentY + _halfMiniMapSize : _map.Height - 1;
+            int yMax = currentY + _halfMiniMapSize < _dungeonMap.Height ? currentY + _halfMiniMapSize : _dungeonMap.Height - 1;
             int xMin = currentX - _halfMiniMapSize >= 0 ? currentX - _halfMiniMapSize : 0;
-            int xMax = currentX + _halfMiniMapSize < _map.Width ? currentX + _halfMiniMapSize : _map.Width - 1;
+            int xMax = currentX + _halfMiniMapSize < _dungeonMap.Width ? currentX + _halfMiniMapSize : _dungeonMap.Width - 1;
             for (int y = yMin, minimapY = 0;y <= yMax;y++, minimapY++) {
                 for (int x = xMin, minimapX = 0;x <= xMax;x++, minimapX++) {
-                    if (_map[x, y].IsLegitRoom){
+                    if (_dungeonMap[x, y].IsLegitRoom){
                         UpdateRoomType(x, y, currentX, currentY);
-                        _renderableTiles.Add(CreateRenderableRoom(_map[x, y], _miniMapRenderPosition.X + minimapX * _tileSize, _miniMapRenderPosition.Y + minimapY * _tileSize));
+                        _renderableTiles.Add(CreateRenderableRoom(_dungeonMap[x, y], _miniMapRenderPosition.X + minimapX * _tileSize, _miniMapRenderPosition.Y + minimapY * _tileSize));
                     }
                 }
             }
         }
 
         private void UpdateRoomType(int x, int y, int currentX, int currentY) {
-            Room room = _map[x, y];
+            Room room = _dungeonMap[x, y];
             if (x == currentX && y == currentY)
                 room.Type = room.Type != RoomType.Start && room.Type != RoomType.Boss ? RoomType.Current : room.Type;
             else

@@ -20,19 +20,19 @@ namespace Drakborgen.Prototype {
             _currentRoomText = new TextNode("text", "", new Vector2(10,10), Color.Azure);
         }
 
-        public Map GenerateCastle(){
-            Map map = _dungeonGenerator.CreateDungeon(10, 10);
+        public DungeonMap GenerateCastle(){
+            DungeonMap dungeonMap = _dungeonGenerator.CreateDungeon(10, 10);
 
-            for (int y = 0;y < map.Height;y++) {
-                for (int x = 0;x < map.Width;x++) {
-                    if(map[x, y].IsLegitRoom)
-                        _rooms.Add(map[x, y].Id, CreateGameRoom(map[x, y]));
+            for (int y = 0;y < dungeonMap.Height;y++) {
+                for (int x = 0;x < dungeonMap.Width;x++) {
+                    if(dungeonMap[x, y].IsLegitRoom)
+                        _rooms.Add(dungeonMap[x, y].Id, CreateGameRoom(dungeonMap[x, y]));
                 }
             }
 
-            map.SetStart(0,0);
-            _currentRoom = map.GetStartRoom().Id;
-            return map;
+            dungeonMap.SetStart(0,0);
+            _currentRoom = dungeonMap.GetStartRoom().Id;
+            return dungeonMap;
         }
 
         private GameRoom CreateGameRoom(Room room){
