@@ -24,7 +24,7 @@ namespace Drakborgen.States {
             EntityWorld.RegisterUpdateSystems(new InputSystem(), new PhysicsSystem(), new AnimationSystem(new AnimationMapper()));
             EntityWorld.RegisterRenderSystem(new RenderSystem());
             _castle = new Castle();
-            _miniMap = new MiniMap(20, 20, 16, "minimap");
+            _miniMap = new MiniMap(20, 20, 16, "minimap", 2);
         }
 
         public override void Setup() {
@@ -40,7 +40,7 @@ namespace Drakborgen.States {
                 new AnimationComponent(GetPlayerAnimations()));
 
             _castle.Load(GetStateValue<int>("room"));
-            _miniMap.SetCurrentRoomPosition(_castle.CurrentRoom.PositionInGridX, _castle.CurrentRoom.PositionInGridY);
+            _miniMap.UpdateMiniMap(_castle.CurrentRoom.PositionInGridX, _castle.CurrentRoom.PositionInGridY);
             AddRenderable(_miniMap.GetRenderables(), 2);
             AddRenderable(_castle.RenderTiles());
             AddRenderable(EntityWorld.GetAllComponents<RenderComponent>());
