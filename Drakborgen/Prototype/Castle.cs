@@ -13,6 +13,13 @@ namespace Drakborgen.Prototype {
         private readonly Dictionary<int, GameRoom> _rooms;
         private readonly CornerToMidGenerator _dungeonGenerator;
         private int _currentRoom = 1;
+        private readonly TextNode _currentRoomText;
+        public TextNode RoomId {
+            get { return _currentRoomText; }
+        }
+        public GameRoom CurrentRoom { get { return _rooms[_currentRoom]; } }
+        public ICollidableMap CollisionLayer { get { return _rooms[_currentRoom]; } }
+        public IEnumerable<ICollidable> Doors { get { return _rooms[_currentRoom].Doors; } }
 
         public Castle(){
             _dungeonGenerator = new CornerToMidGenerator();
@@ -47,19 +54,10 @@ namespace Drakborgen.Prototype {
             Debug.WriteLine(id);
         }
 
-        private readonly TextNode _currentRoomText;
-        public TextNode RoomId{
-            get { return _currentRoomText; }
-        }
-
         public IEnumerable<IRenderable> RenderTiles(){
             if (_rooms[_currentRoom] == null)
                 return Enumerable.Empty<IRenderable>();
             return _rooms[_currentRoom].RenderTiles();
         }
-
-        public GameRoom CurrentRoom { get { return _rooms[_currentRoom]; } }
-        public ICollidableMap CollisionLayer { get { return _rooms[_currentRoom]; } }
-        public IEnumerable<ICollidable> Doors { get { return _rooms[_currentRoom].Doors; } }
     }
 }

@@ -4,16 +4,16 @@ using Gengine.Input;
 namespace Drakborgen.Systems {
     public class AnimationMapper : IAnimationMapper {
         public string GetAnimationId(InputComponent input) {
-            if (input.DirectionX < 0) {
+            if (input.Input.HasFlag(InputKey.Left)) {
                 return "moveleft";
             }
-            if (input.DirectionX > 0) {
+            if (input.Input.HasFlag(InputKey.Right)) {
                 return "moveright";
             }
-            if (input.DirectionY < 0) {
+            if (input.Input.HasFlag(InputKey.Up)) {
                 return "moveup";
             }
-            if (input.DirectionY > 0) {
+            if (input.Input.HasFlag(InputKey.Down)) {
                 return "movedown";
             }
             return "idle";
